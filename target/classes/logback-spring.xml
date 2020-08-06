@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--配置控制台日志-->
+    <!--appender指定日志的输出目的地是控制台-->
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <!--配置日志的输出格式-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!--%d表示日期时间，msg表示日志信息-->
+            <pattern>
+                %d - %msg%n
+            </pattern>
+        </layout>
+    </appender>
+
+    <!--appender指定info日志的输出目的地为文件-->
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--使得info日志中只输出info级别的信息-->
+        <!--即使配置info,也不会过滤掉Error级别的日志信息，因为高于info级别的会输出，因此使用onMatch-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <!--如果匹配，那么下面的规则就不会执行-->
+            <onMatch>DENY</onMatch>
+            <!--如果不匹配，执行下面的规则-->
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <!--配置日志的输出格式-->
+        <encoder>
+            <pattern>
+                %msg%n
+            </pattern>
+        </encoder>
+        <!--配置滚动策略:按照时间滚动,每天一个日志文件-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径,直接在日志文件名中带上时间-->
+            <fileNamePattern>F:/WeiXinDianCan_SpringBoot/info.%d.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <!--appender指定error日志的输出目的地为文件-->
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--error日志只输出error级别的日志信息-->
+        <!--根据级别过滤，这个配置项只输出Error级别的日志，过滤掉info级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <!--配置日志的输出格式-->
+        <encoder>
+            <pattern>
+                %msg%n
+            </pattern>
+        </encoder>
+        <!--配置滚动策略:按照时间滚动,每天一个日志文件-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径,直接在日志文件名中带上时间-->
+            <fileNamePattern>F:/WeiXinDianCan_SpringBoot/error.%d.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <!--root标识这个appender将会添加到这个logger,使用这个配置-->
+    <root level="INFO">
+        <appender-ref ref="consoleLog"/>
+        <appender-ref ref="fileInfoLog"/>
+        <appender-ref ref="fileErrorLog"/>
+    </root>
+
+</configuration>
